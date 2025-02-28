@@ -1,18 +1,25 @@
-import { useContext } from "react"
-import { AuthContext } from "../provider/AuthProvider"
+import { useContext } from 'react'
+import { AuthContext } from '../provider/AuthProvider'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const Login = () => {
-  const {loginWithUser} = useContext(AuthContext)
-  const hangleLogin = (e) => {
-e.preventDefault()
-const Form = new FormData(e.target)
-const email = Form.get('email')
-  console.log("🚀 ~ hangleLogin ~ email:", email)
-  const pass = Form.get('password')
-  loginWithUser(email,pass)
-  .then(res => console.log(res))
-  .then(error => console.log(error))
-  }
+    const { loginWithUser, setUser } = useContext(AuthContext)
+    const location = useLocation()
+    const navigate = useNavigate()
+    const hangleLogin = (e) => {
+        e.preventDefault()
+        const Form = new FormData(e.target)
+        const email = Form.get('email')
+        console.log('🚀 ~ hangleLogin ~ email:', email)
+        const pass = Form.get('password')
+        loginWithUser(email, pass)
+            .then((res) => {
+                const result = res.user
+                setUser(result)
+                navigate(location?.state ? location.state : '/')
+            })
+            .then((error) => console.log(error))
+    }
     return (
         <div>
             <div className="hero bg-base-200 min-h-screen">
@@ -32,7 +39,7 @@ const email = Form.get('email')
                                     <span className="label-text">Email</span>
                                 </label>
                                 <input
-                                name="email"
+                                    name="email"
                                     type="email"
                                     placeholder="email"
                                     className="input input-bordered"
@@ -44,7 +51,7 @@ const email = Form.get('email')
                                     <span className="label-text">Password</span>
                                 </label>
                                 <input
-                                name="password"
+                                    name="password"
                                     type="password"
                                     placeholder="password"
                                     className="input input-bordered"
