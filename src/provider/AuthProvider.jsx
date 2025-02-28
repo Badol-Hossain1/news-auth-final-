@@ -15,19 +15,20 @@ const auth = getAuth(app)
 // eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
     const CreateNewUser = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password)
     }
     const out = async () => {
         try {
             await signOut(auth)
-            console.log("User signed out successfully!")
+            console.log('User signed out successfully!')
         } catch (error) {
-            console.error("Error signing out:", error)
+            console.error('Error signing out:', error)
         }
-    };
-    const loginWithUser = (email,pass) => {
-        return signInWithEmailAndPassword(auth,email,pass)
+    }
+    const loginWithUser = (email, pass) => {
+        return signInWithEmailAndPassword(auth, email, pass)
     }
 
     const authInfo = {
@@ -35,11 +36,13 @@ const AuthProvider = ({ children }) => {
         setUser,
         CreateNewUser,
         out,
-        loginWithUser
+        loginWithUser,
+        loading,
     }
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser)
+            setLoading(false)
         })
         return () => {
             unsubscribe()
